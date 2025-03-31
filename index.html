@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support and Resistance Level Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --telegram: #0088cc;
+            --youtube: #ff0000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease;
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .owner {
+            font-size: 1rem;
+            color: var(--dark);
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .owner::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Parisienne', cursive;
+            font-size: 1.8rem;
+            color: var(--primary);
+            opacity: 0.7;
+            transform: rotate(-5deg);
+        }
+        
+        .signature::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .telegram {
+            background-color: var(--telegram);
+        }
+        
+        .youtube {
+            background-color: var(--youtube);
+        }
+        
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-card, .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input-card:hover, .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .input-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .result-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .result-card h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .result-card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .result-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .levels {
+            margin-bottom: 1.5rem;
+        }
+        
+        .levels h3 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .levels h3 i {
+            color: var(--accent);
+        }
+        
+        .level-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .level-badge {
+            background: #e9ecef;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .resistance-badge {
+            background: rgba(244, 143, 177, 0.2);
+            color: #f72585;
+        }
+        
+        .support-badge {
+            background: rgba(76, 201, 240, 0.2);
+            color: #4cc9f0;
+        }
+        
+        .middle-line {
+            text-align: center;
+            margin-top: auto;
+            padding: 12px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .disclaimer {
+            background-color: rgba(247, 37, 133, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        .disclaimer strong {
+            color: var(--warning);
+        }
+
+        .announcement {
+            background-color: rgba(72, 149, 239, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .announcement a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .announcement a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Support & Resistance Calculator</h1>
+            <div class="owner">Created by Zahid Kashmiri</div>
+            
+            <div class="social-links">
+                <a href="https://t.me/premiumpine" class="social-link telegram" target="_blank" title="Join our Telegram">
+                    <i class="fab fa-telegram"></i>
+                </a>
+                <a href="https://youtube.com/@tradersrooom?si=4h5gFGxr1v5-gbpB" class="social-link youtube" target="_blank" title="Visit our YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </header>
+        
+        <div class="calculator-container">
+            <div class="input-card">
+                <div class="input-group">
+                    <label for="high">High Value</label>
+                    <input type="number" id="high" placeholder="Enter high value" step="any">
+                </div>
+                
+                <div class="input-group">
+                    <label for="low">Low Value</label>
+                    <input type="number" id="low" placeholder="Enter low value" step="any">
+                </div>
+                
+                <button class="btn" onclick="calculateLevels()">
+                    <i class="fas fa-calculator"></i> Calculate Levels
+                </button>
+
+                <div class="disclaimer">
+                    <strong>Terms & Conditions Apply:</strong> This calculator is provided for educational purposes only. All calculations should be verified before making any trading decisions. Copyright © 2023 Zahid Kashmiri. All rights reserved.
+                </div>
+            </div>
+            
+            <div class="result-card">
+                <h2>Calculated Levels</h2>
+                <div class="result-section" id="result">
+                    <div class="levels">
+                        <h3><i class="fas fa-arrow-up"></i> Resistance Levels</h3>
+                        <div class="level-row" id="resistance-levels">
+                            <div class="level-badge resistance-badge">Enter values to calculate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="levels">
+                        <h3><i class="fas fa-arrow-down"></i> Support Levels</h3>
+                        <div class="level-row" id="support-levels">
+                            <div class="level-badge support-badge">Enter values to calculate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="middle-line" id="middle-line">
+                        Middle Line: -
+                    </div>
+
+                    <div class="announcement">
+                        <strong>Important:</strong> Watch this video before using this calculator: <a href="https://youtu.be/0YoI6eNF80o?si=tA8FIchNz2qSBWM-" target="_blank">How to Use Support & Resistance Calculator</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="signature">Zahid Kashmiri</div>
+    </div>
+    <script>
+        function calculateLevels() {
+            // Get input values
+            const high = parseFloat(document.getElementById('high').value);
+            const low = parseFloat(document.getElementById('low').value);
+            
+            // Validate inputs
+            if (isNaN(high) || isNaN(low)) {
+                alert("Please enter valid numbers for both High and Low values.");
+                return;
+            }
+            
+            if (low >= high) {
+                alert("Low value must be less than High value.");
+                return;
+            }
+            
+            // Calculate difference and middle value
+            const diff = high - low;
+            const middleValue = diff / 2;
+            
+            // Calculate Resistance Levels
+            const r1 = high + middleValue;
+            const r2 = r1 + diff;
+            const r3 = r2 + middleValue;
+            const r4 = r3 + diff;
+            const r5 = r4 + middleValue;
+            
+            // Calculate Support Levels
+            const s1 = low - middleValue;
+            const s2 = s1 - diff;
+            const s3 = s2 - middleValue;
+            const s4 = s3 - diff;
+            const s5 = s4 - middleValue;
+            
+            // Calculate Middle Line
+            const middleLine = ((high + low) / 2).toFixed(2);
+            
+            // Update resistance levels display
+            const resistanceLevels = document.getElementById('resistance-levels');
+            resistanceLevels.innerHTML = `
+                <div class="level-badge resistance-badge">R1: ${r1.toFixed(2)}</div>
+                <div class="level-badge resistance-badge">R2: ${r2.toFixed(2)}</div>
+                <div class="level-badge resistance-badge">R3: ${r3.toFixed(2)}</div>
+                <div class="level-badge resistance-badge">R4: ${r4.toFixed(2)}</div>
+                <div class="level-badge resistance-badge">R5: ${r5.toFixed(2)}</div>
+            `;
+            
+            // Update support levels display
+            const supportLevels = document.getElementById('support-levels');
+            supportLevels.innerHTML = `
+                <div class="level-badge support-badge">S1: ${s1.toFixed(2)}</div>
+                <div class="level-badge support-badge">S2: ${s2.toFixed(2)}</div>
+                <div class="level-badge support-badge">S3: ${s3.toFixed(2)}</div>
+                <div class="level-badge support-badge">S4: ${s4.toFixed(2)}</div>
+                <div class="level-badge support-badge">S5: ${s5.toFixed(2)}</div>
+            `;
+            
+            // Update middle line
+            document.getElementById('middle-line').innerHTML = `
+                <i class="fas fa-arrows-alt-v"></i> Middle Line: <strong>${middleLine}</strong>
+            `;
+            
+            // Add pulse animation to results
+            const resultCard = document.querySelector('.result-card');
+            resultCard.classList.add('pulse');
+            setTimeout(() => {
+                resultCard.classList.remove('pulse');
+            }, 2000);
+        }
+
+        // Add keypress event to trigger calculation on Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateLevels();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</body>
+</html>
